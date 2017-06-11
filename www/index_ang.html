@@ -1,0 +1,217 @@
+﻿<!doctype html>
+<html ng-app="ShouldiceApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Shouldice</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" id="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <link rel="stylesheet/less" type="text/css" href="css/colors.less" />
+    <link rel="stylesheet/less" type="text/css" href="css/variables.less" />
+    <link rel="stylesheet/less" type="text/css" href="css/shouldice.less" />
+    <link href="jquery-mobile-1-4-5/jquery.mobile.structure-1.4.5.css" rel="stylesheet" type="text/css">
+    <link href="js/slick/slick.css" rel="stylesheet" type="text/css">
+
+    <script src="js/screen_size.js" type="text/javascript"></script>
+    <script src="js/jquery-1.11.2.min.js" type="text/javascript"></script>
+    <!--<script src="jquery-mobile-1-4-5/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>-->
+    <script src="js/slick/slick.min.js" type="text/javascript"></script>
+
+    <script>
+        var tmpWidth = effectiveDeviceWidth();
+        var tmpHeight = effectiveDeviceHeight();
+
+        if (tmpWidth < tmpHeight) {
+            var tmp = tmpWidth;
+            tmpWidth = tmpHeight;
+            tmpHeight = tmp;
+        }
+        less = {
+            env: "development",
+            async: false,
+            fileAsync: false,
+            poll: 1000,
+            functions: {},
+            dumpLineNumbers: "comments",
+            globalVars: {
+                sw: tmpWidth + "px",
+                sh: tmpHeight + "px"
+            },
+        };
+
+        var IsOnline = true;
+    </script>
+
+    <script src="js/less.min.js" type="text/javascript"></script>
+    <script src="js/shouldice.js" type="text/javascript"></script>
+
+    <script src="./js/angular.min.js"></script>
+    <script src="./js/angular-ui-router.js"></script>
+    <script src="./js/app.js" type="text/javascript"></script>
+    <script src="./js/routes.js"></script>
+    <script src="./js/control_general.js"></script>
+    <script src="./js/control_header.js"></script>
+    <script src="./js/control_samples_content.js"></script>
+    <script src="./js/control_samples_landing.js"></script>
+    <script src="./js/control_catalog.js"></script>
+
+    <script>
+        $(function () {
+            $("body").pagecontainer({ defaults: true });
+
+            $("[data-role='navbar']").navbar();
+            $("[data-role='header'], [data-role='footer']").toolbar();
+
+            $("body > [data-role='panel']").panel();
+            $("body > [data-role='panel'] [data-role='listview']").listview();
+
+        });
+        $(document).on("pagecreate", function () {
+        });
+    </script>
+
+</head>
+<body ng-controller="Control_General">
+    <!-- start: Main Menu -->
+    <div data-id="left_menu" data-role="panel" data-position="left" data-position-fixed="true" data-display="push" id="left_menu" class="left_menu ui-panel ui-panel-position-left ui-panel-display-push ui-body-a">
+        <div class="ui-panel-inner">
+            <ul class="left_inner first">
+                <li class="left_menu_item"><a href="#catalog" data-transition="slide" onclick="showHeader(); showCatalogFooter(); hideSamplesFooter();">About Shouldice</a></li>
+            </ul>
+            <ul class="left_inner second">
+                <li class="left_menu_item"><a href="#contact" onclick="showHeader(); hideCatalogFooter(); hideSamplesFooter();">Contact</a></li>
+            </ul>
+            <ul class="left_inner third">
+                <li class="left_menu_item"><a href="#language" onclick="hideHeader(); hideCatalogFooter(); hideSamplesFooter();">Change language</a></li>
+                <li class="left_menu_item"><a href="#main_content">Support</a></li>
+            </ul>
+            <ul class="left_inner last">
+                <li class="left_menu_item">Stay in touch</li>
+                <li class="left_menu_item social_media no_border">
+                    <a href="#">
+                        <img src="images/social_media_icons/twitter.png">
+                    </a>
+                    <a href="#">
+                        <img src="images/social_media_icons/facebook.png">
+                    </a>
+                    <a href="#">
+                        <img src="images/social_media_icons/linked_in.png">
+                    </a>
+                    <a href="#" class="last">
+                        <img src="images/social_media_icons/g_plus.png">
+                    </a>
+                </li>
+            </ul>
+            <div id="left_menu_logo">
+                <img src="images/left_menu/logo.png">
+            </div>
+        </div>
+    </div>
+    <!-- end: Main Menu -->
+    <!-- header begin -->
+    <div class="header" ng-controller="Control_Header" data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#left_menu" id="main_menu_toggle">
+            <img src="images/header/menu_toggle_icon.png">
+        </a>
+        <a id="back_button" ng-click="GoBack()" class="ui-btn-left ui-link ui-btn ui-shadow ui-corner-all">
+            <img src="images/header/back_icon.png">
+        </a>
+        <a href="#catalog_or_samples" id="home_icon" class="ui-btn-left ui-link ui-btn ui-shadow ui-corner-all" onclick="hideHeader(); hideCatalogFooter(); hideSamplesFooter();">
+            <img src="images/header/home_icon.png">
+        </a>
+        <a href="#favorites" id="header_favourite" class="ui-btn-right ui-link ui-btn ui-shadow ui-corner-all" data-transition="slide" onclick="hideCatalogFooter(); hideSamplesFooter();">
+            <img src="images/header/favorites_icon.png">
+            <span>5</span>
+        </a>
+    </div>
+    <!-- header end -->
+    <div ui-view="mainView" id="{{$root.GetUIViewID()}}" class="{{$root.GetUIViewClass()}}" data-role="page" >
+    </div>
+    <!-- start: Footer Samples -->
+    <div id="footer_samples" class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <ul>
+            <a href="#" class="toggle_subnav">
+                <img src="images/footer/show_subnav.jpg" width="120" height="120" class="first">
+                <img src="images/footer/hide_subnav.jpg" width="120" height="120" class="last">
+            </a>
+            <li class="first">
+                <a href="#" class="level_1">Residential</a>
+            </li>
+            <li class="act">
+                <a href="#" class="level_1">Architectural</a>
+                <ul class="subnav">
+                    <a href="#" class="toggle_subnav">
+                        <img src="images/footer/show_subnav.jpg" width="120" height="120" class="first">
+                        <img src="images/footer/hide_subnav.jpg" width="120" height="120" class="last">
+                    </a>
+                    <li class="subnav_item">
+                        <a href="#" class="subnav_text">Estate Stone</a>
+                        <a href="#" class="subnav_image">
+                            <img src="images/content_images/footer_navigation/estate_stone.jpg" width="258" height="130">
+                        </a>
+                    </li>
+                    <li class="subnav_item">
+                        <a href="#" class="subnav_text">Estate Stone</a>
+                        <a href="#" class="subnav_image">
+                            <img src="images/content_images/footer_navigation/estate_stone.jpg" width="258" height="130">
+                        </a>
+                    </li>
+                    <li class="subnav_item">
+                        <a href="#" class="subnav_text">Estate Stone</a>
+                        <a href="#" class="subnav_image">
+                            <img src="images/content_images/footer_navigation/estate_stone.jpg" width="258" height="130">
+                        </a>
+                    </li>
+                    <li class="subnav_item">
+                        <a href="#" class="subnav_text">Estate Stone</a>
+                        <a href="#" class="subnav_image">
+                            <img src="images/content_images/footer_navigation/estate_stone.jpg" width="258" height="130">
+                        </a>
+                    </li>
+                    <li class="subnav_item">
+                        <a href="#" class="subnav_text">Estate Stone</a>
+                        <a href="#" class="subnav_image">
+                            <img src="images/content_images/footer_navigation/estate_stone.jpg" width="258" height="130">
+                        </a>
+                    </li>
+                    <li class="subnav_item">
+                        <a href="#" class="subnav_text">Estate Stone</a>
+                        <a href="#" class="subnav_image">
+                            <img src="images/content_images/footer_navigation/estate_stone.jpg" width="258" height="130">
+                        </a>
+                    </li>
+                    <li class="subnav_item">
+                        <a href="#" class="subnav_text">Estate Stone</a>
+                        <a href="#" class="subnav_image">
+                            <img src="images/content_images/footer_navigation/estate_stone.jpg" width="258" height="130">
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="last">
+                <a href="#" class="level_1">Fusion Stone</a>
+            </li>
+        </ul>
+    </div>
+    <!-- end: Footer Samples -->
+    <!-- start: Gallery Popup -->
+    <div id="gallery_popup">
+        <div id="gallery_popup_header">
+            <h1>Image Title</h1>
+            <a href="#" id="close_popup">
+                <img src="images/gallery_popup/close_popup.png">
+            </a>
+            <a href="#" class="add_to_favourites">
+                <img src="images/gallery_popup/add_to_favorites.png" width="46" height="100">
+                <!-- <img src="images/gallery_popup/remove_from_favorites.png" width="46" height="100"> -->
+            </a>
+        </div>
+        <div id="gallery_image">
+            <img src="images/content_images/gallery_popup/popup.jpg" width="2048" height="1436">
+        </div>
+    </div>
+    <!-- end: Gallery Popup -->
+</body>
+</html>

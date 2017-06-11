@@ -1,0 +1,144 @@
+/* Less CSS Document */
+/* Will be auto compiled to CSS file on save */
+
+@screenWidth: @sw;
+@screenHeight: @sh;
+
+/* @screenWidth: 1024px;
+@screenHeight: 768px; */
+
+/* ---- Layout elements ---- */
+@header_height:ceil(@screenHeight / 15.3);
+@half_header_height:ceil(@header_height / 2);
+@footer_height: floor(@header_height * 1.1);
+@footer_border: floor(@header_height * 0.1);
+
+@text_content_padding: floor(@header_height * 0.65);
+
+@full_content_height: @screenHeight - @header_height - @footer_height;
+
+@half_width: floor(@screenWidth / 2); 
+
+/* ---- Font Sizes and line-heights ---- */
+@font_size_20:ceil(@header_height * 0.2);
+@font_size_25:ceil(@header_height * 0.25);
+@font_size_30:ceil(@header_height * 0.3);
+@font_size_32:ceil(@header_height * 0.32);
+@font_size_35:ceil(@header_height * 0.35);
+@font_size_40:ceil(@header_height * 0.4);
+@font_size_50:ceil(@header_height * 0.5);
+@font_size_55:ceil(@header_height * 0.55);
+@font_size_60:ceil(@header_height * 0.6);
+@font_size_65:ceil(@header_height * 0.65);
+@font_size_70:ceil(@header_height * 0.7);
+@font_size_75:ceil(@header_height * 0.75);
+@font_size_80:ceil(@header_height * 0.80);
+@font_size_85:ceil(@header_height * 0.85);
+
+@line_height_42: ceil(@header_height * 0.42);
+@line_height_50: ceil(@header_height * 0.5);
+@line_height_70: ceil(@header_height * 0.7);
+@line_height_90: ceil(@header_height * 0.9);
+@line_height_100: ceil(@header_height * 1);
+
+/* ---- Catalog or Samples selection ---- */
+@catalog_or_samples_img_height: floor(@screenHeight / 1.526);
+@catalog_or_samples_content_height: @screenHeight - @catalog_or_samples_img_height - floor(@header_height / 4);
+@catalog_or_samples_border: @screenHeight - @catalog_or_samples_img_height - @catalog_or_samples_content_height;
+@catalog_or_samples_orange_height: floor(@catalog_or_samples_content_height / 3.37);
+@catalog_or_samples_green_height: @catalog_or_samples_content_height - 2 * @catalog_or_samples_orange_height;
+@catalog_or_samples_logo_height: @catalog_or_samples_content_height - @catalog_or_samples_orange_height;
+
+/* ---- Language Selection ---- */
+@language_selection_orange_bg_height: floor((@catalog_or_samples_content_height - @catalog_or_samples_border) / 2) + @catalog_or_samples_border; 
+@language_links_padding: floor(@header_height * 0.5);
+
+/* ---- Left Menu ---- */
+@left_menu_li_padding: floor(@header_height * 0.25);
+
+/* ---- Footer Catalog ---- */
+@footer_catalog_item_width: floor(@screenWidth / 6);
+@footer_catalog_item_width_first: @screenWidth - 5 * @footer_catalog_item_width;
+
+/* ---- Footer Samples ---- */
+@footer_samples_item_width: floor(@screenWidth / 3);
+@footer_samples_item_width_first: @screenWidth - 2 * @footer_samples_item_width;
+
+/* ---- About Us ---- */
+@about_us_top_image_height: floor(@header_height * 7.18);
+@hover_description_larger_padding: floor(@header_height * 3.6);
+@hover_description_height: floor(@header_height * 1.67);
+
+/* ---- subnav ---- */
+@subnav_height: @font_size_70 + floor(@subnav_item_width / 2);
+@subnav_item_border: floor(@header_height * 0.24 * 0.5);
+@subnav_item_border_final: floor(@subnav_item_border / 2);
+@subnav_item_width: floor(@screenWidth / 7) - @subnav_item_border - @subnav_item_border;
+
+
+/* ---- Sub Category ---- */
+@sub_cat_main_image_width: floor(@screenWidth / 1.6);
+@sub_cat_main_text: @screenWidth - @sub_cat_main_image_width;
+@sub_cat_anchor_link_width: @sub_cat_main_text - @text_content_padding - @text_content_padding;
+@sub_cat_anchor_link_height: floor(@sub_cat_anchor_link_width / 3.4);
+
+/* ---- Stone Sample Item ---- */
+@inspiration_spacing:floor(@header_height * 0.4);
+@stone_sample_item_width: floor( (@screenWidth - @font_size_35 - @font_size_35 - @font_size_35 - @font_size_35) / 3);
+@stone_sample_item_margin_bottom: floor(@header_height * 0.1);
+
+@inspiration_image_1_width: floor(@header_height * 6);
+
+@inspiration_image_2_width: @sub_cat_main_image_width - @inspiration_image_1_width - @inspiration_spacing;
+@inspiration_image_2_height: floor(@header_height * 6.97);
+
+@inspiration_image_3_height: @full_content_height - @inspiration_image_2_height - @inspiration_spacing;
+
+@inspiration_image_4_width: floor(@header_height * 6);
+
+@inspiration_image_5_width: @screenWidth - @inspiration_spacing - @inspiration_image_4_width;
+@inspiration_image_5_height: floor((@full_content_height - @inspiration_spacing) / 2);
+
+@inspiration_image_6_width: floor(@header_height * 5.8);
+@inspiration_image_6_height: @full_content_height - @inspiration_spacing - @inspiration_image_5_height;
+
+@inspiration_image_7_width: @screenWidth - @inspiration_spacing - @inspiration_spacing - @inspiration_image_6_width - @inspiration_image_4_width;
+
+@inspiration_image_8_width: floor(@header_height * 6);
+@inspiration_image_8_height: floor(@header_height * 5.4);
+
+@inspiration_image_9_width: floor(@header_height * 6);
+@inspiration_image_9_height: @full_content_height - @inspiration_image_8_height - @inspiration_spacing;
+
+@inspiration_image_10_width: @screenWidth - @inspiration_spacing - @inspiration_image_8_width;
+@inspiration_image_10_height: @full_content_height;
+
+/* ---- Stone Samples ---- */
+@stone_samples_breadrumb_width:@screenWidth - @font_size_35 - @font_size_35;
+@stone_samples_breadrumb_height:floor(@header_height * 1.75);
+@stone_samples_breadrumb_padding_top:floor(@header_height * 0.35);
+@stone_samples_breadrumb_line_height: @stone_samples_breadrumb_height - @stone_samples_breadrumb_padding_top;
+
+/* ---- Favourites ---- */
+@faourites_column_width: floor((@screenWidth - @font_size_35 - @font_size_35 - @font_size_35) / 2);
+@faourites_item_width: floor((@faourites_column_width - @font_size_35) / 2);
+
+/* ---- Contact ---- */
+@contact_padding_left: floor(@header_height * 1.65);
+@contact_width: floor(@header_height * 9.25);
+@form_width: floor(@header_height * 8.6);
+
+/* ---- Samples Landing ---- */
+@samples_landing_white_line: floor(@header_height * 0.15);
+@samples_landing_top_image_height:floor(@header_height * 9.65);
+@samples_landing_top_left_rihght_image_width: floor(@screenWidth / 2);
+@samples_landing_top_image_middle_width:floor(@screenWidth / 2.5);
+@samples_landing_top_image_middle_border_bottom: floor(@header_height * 1.45 * 1.05);
+@samples_landing_top_image_middle_margin_left: floor(@samples_landing_top_image_middle_width / 2 * (-1));
+@samples_landing_green_horizontal_height: floor(@header_height * 1.75);
+@samples_landing_horizontal_grey_height: floor(@header_height * 2.2);
+@samples_landing_logo_height: floor(@samples_landing_horizontal_grey_height * 1.4);
+@samples_landing_logo_margin_top: floor(@samples_landing_horizontal_grey_height * 0.25 * (-1));
+
+/* ----- Loading Screen ---- */
+@loading_creen_top_margin: floor(@screenHeight * 0.6);

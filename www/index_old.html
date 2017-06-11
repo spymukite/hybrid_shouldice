@@ -1,0 +1,950 @@
+﻿<!doctype html>
+<html ng-app="Shouldice_App">
+<head>
+	<meta charset="UTF-8">
+	<title>Shouldice</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" id="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <script src="http://app.shouldice.ca/typo3conf/ext/shouldice_app/Resources/Public/php/data_json.php"></script>
+
+    <script src="./js/app_strings.js"></script>
+    <link rel="stylesheet/less" type="text/css" href="css/colors.less" />
+    <link rel="stylesheet/less" type="text/css" href="css/variables.less" />
+    <link rel="stylesheet/less" type="text/css" href="css/shouldice.less" />
+    <link href="jquery-mobile-1-4-5/jquery.mobile.structure-1.4.5.css" rel="stylesheet" type="text/css">
+    <link href="js/slick/slick.css" rel="stylesheet" type="text/css">
+    
+    <script src="js/screen_size.js" type="text/javascript"></script>
+	<script src="js/jquery-1.11.2.min.js" type="text/javascript"></script>
+    <script src="jquery-mobile-1-4-5/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
+    <script src="js/slick/slick.min.js" type="text/javascript"></script>
+
+    <script>
+        var tmpWidth = effectiveDeviceWidth();
+        var tmpHeight = effectiveDeviceHeight();
+
+        if (tmpWidth < tmpHeight) {
+            var tmp = tmpWidth;
+            tmpWidth = tmpHeight;
+            tmpHeight = tmp;
+        }
+        less = {
+            //env: "development",
+            env: "production",
+            async: false,
+            fileAsync: false,
+            poll: 1000,
+            functions: {},
+            dumpLineNumbers: "comments",
+            globalVars: {
+                sw: tmpWidth + "px",
+                sh: tmpHeight + "px"
+            },
+        };
+
+        var IsOnline = true;
+    </script>
+    
+	<script src="./js/less.min.js" type="text/javascript"></script>
+    
+    <script src="./js/angular.min.js"></script>
+
+    <!--<script src="./js/app_data.js"></script>-->
+    <script src="./js/app_controllers.js"></script>
+    <script src="./js/app.js" type="text/javascript"></script>
+    
+    <script src="./js/app_helper.js"></script>
+
+    <script>
+		$(function() {
+			$( "body" ).pagecontainer({ defaults: true });	
+						
+			$( "[data-role='navbar']" ).navbar();
+			$( "[data-role='header'], [data-role='footer']" ).toolbar();
+			
+			$( "body > [data-role='panel']" ).panel();
+			$( "body > [data-role='panel'] [data-role='listview']" ).listview();
+							
+		});
+
+		var curLocation = "";
+
+		$(document).on("pagebeforeshow", "#language", function () {
+		    curLocation = "#language";
+		    hideHeader();
+		    hideSamplesFooter();
+		    hideCatalogFooter();
+		    //$('#changeLocation').click();
+		});
+
+		$(document).on("pagebeforeshow", "#catalog_or_samples", function () {
+		    curLocation = "#catalog_or_samples";
+		    showHeader();
+		    hideSamplesFooter();
+		    hideCatalogFooter();
+		    //$('#changeLocation').click();
+		});
+
+		$(document).on("pagebeforeshow", "#catalog", function () {
+		    curLocation = "#catalog";
+		    showHeader();
+		    showCatalogFooter();
+		    hideSamplesFooter();
+		    //$('#changeLocation').click();
+		});
+
+		$(document).on("pagebeforeshow", "#samples_landing", function () {
+		    curLocation = "#samples_landing";
+		    showHeader();
+		    hideCatalogFooter();
+		    hideSamplesFooter();
+		    //$('#changeLocation').click();
+		});
+
+
+		$(document).on("pagebeforeshow", "#samples_content", function () {
+		    curLocation = "#samples_content";
+		    showHeader();
+		    hideCatalogFooter();
+		    showSamplesFooter();
+		    //$('#changeLocation').click();
+		});
+
+
+		$(document).on("pagebeforeshow", "#favourites", function () {
+		    curLocation = "#favourites";
+		    showHeader();
+		    hideCatalogFooter();
+		    hideSamplesFooter();
+		    //$('#changeLocation').click();
+		});
+
+		$(document).on("pagebeforeshow", "#contact", function () {
+		    curLocation = "#contact";
+		    showHeader();
+		    hideCatalogFooter();
+		    hideSamplesFooter();
+		    //$('#changeLocation').click();
+		});
+
+
+	</script>
+
+
+
+
+</head>
+
+<body ng-controller="Control_General">
+    
+    <div id="loadingScreen">
+        <h1>Loading Galleries ...</h1>
+        <h2>Please wait for a moment ...</h2>
+        <img src="./images/spiner.gif" class="loading_spiner" style="margin:0 !important; padding:0 !important; max-height:50px; width: auto;">
+    </div>
+
+    <script>
+        var DownloadURL = Host + '/uploads/tx_shouldiceapp/';
+        UrlToImages = DownloadURL;
+        isCordovaApp = true;
+
+    </script>
+    <a ng-click="SetOfflineMode()" id="offlineClick" style="position:absolute; visibility:hidden;">Click</a>
+    <a ng-click="SetOnLineMode()" id="onLineClick" style="position:absolute; visibility:hidden;">Click</a>
+	
+    <a ng-click="ChangeLocation()" id="changeLocation" style="position:absolute; visibility:hidden;">Click</a>
+
+	<!-- start: Main Menu -->
+    <div data-id="left_menu" data-role="panel" data-position="left" data-position-fixed="true" data-display="push" id="left_menu" class="left_menu ui-panel ui-panel-position-left ui-panel-display-push ui-body-a" >
+    	<div class="ui-panel-inner">
+        	<ul class="left_inner first">
+            	<li class="left_menu_item"><a href="#catalog" ng-click="ChangeLocation('#catalog')" data-transition="slide">{{Strings.MainMenu.About}}</a></li>
+            </ul>
+            <ul class="left_inner second">
+            	<li class="left_menu_item"><a href="#contact" ng-click="ChangeLocation('#contact')">{{Strings.MainMenu.Contact}}</a></li>
+            </ul>
+            <ul class="left_inner third">
+            	<li class="left_menu_item"><a href="#language" ng-click="ChangeLocation('#language')">{{Strings.MainMenu.ChangeLanguage}}</a></li>
+                <li class="left_menu_item"><a href="#main_content" ng-click="ChangeLocation('#main_content')">{{Strings.MainMenu.InTouch}}</a></li>
+            </ul>
+            <ul class="left_inner last">
+            	<li class="left_menu_item">{{Strings.MainMenu.Support}}</li>
+                <li class="left_menu_item social_media no_border">
+                	<a href="#">
+                    	<img src="images/social_media_icons/twitter.png">
+                    </a>
+                    <a href="#">
+                    	<img src="images/social_media_icons/facebook.png">
+                    </a>
+                    <a href="#">
+                    	<img src="images/social_media_icons/linked_in.png">
+                    </a>
+                    <a href="#" class="last">
+                    	<img src="images/social_media_icons/g_plus.png">
+                    </a>
+                </li>
+            </ul>
+            <div id="left_menu_logo">
+            	<img src="images/left_menu/logo.png">
+            </div>
+        </div>
+    </div>
+    <!-- end: Main Menu -->
+    
+    <!-- header begin -->
+	<div class="header" data-role="header" data-position="fixed" data-tap-toggle="false">
+		<a href="#left_menu" id="main_menu_toggle">
+        	<img src="images/header/menu_toggle_icon.png">
+        </a>
+        <a href="" id="back_button" class="ui-btn-left ui-link ui-btn ui-shadow ui-corner-all" ng-click="GoBack()">
+        	<img src="images/header/back_icon.png">
+        </a>
+        <a href="#catalog_or_samples" ng-click="ChangeLocation('#catalog_or_samples')" id="home_icon" class="ui-btn-left ui-link ui-btn ui-shadow ui-corner-all">
+            <img src="images/header/home_icon.png">
+        </a>
+        <a href="#favourites" ng-click="ChangeLocation('#favorites')" id="header_favourite" class="ui-btn-right ui-link ui-btn ui-shadow ui-corner-all" data-transition="slide">
+            <img src="images/header/favorites_icon.png">
+            <span>{{Favorites.length}}</span>
+        </a>
+	</div>
+	<!-- header end -->
+    
+	<!-- start: Language Selection -->
+    <div data-role="page" id="language" data-url="language" class="full_height">
+    	<div class="ui-panel-wrapper">
+        	<div class="top_image">
+            	<img src="images/content_images/language_selection/left_image.jpg" width="1810" height="983" class="left">
+                <div class="right">
+                	<img src="images/content_images/language_selection/right_image.jpg">	
+                </div>
+            </div>
+            <div class="language_text_and_logo">
+            	<div class="orange_bg"></div>
+                <div class="green_bg_diagonal"></div>
+                <div class="green_bg_horizontal"></div>
+                <div class="english language_selection">
+                	<h1>The natural choice in stone</h1>
+                    <a href="#catalog_or_samples" data-transition="slide" ng-click="ChangeLanguage(1)">Enter English</a>
+                </div>
+                <div class="french language_selection">
+                	<h1>Le choix naturel en matière de pierre</h1>
+                    <a href="#catalog_or_samples" data-transition="slide" ng-click="ChangeLanguage(2)">Enter French</a>
+                </div>
+                <div class="language_logo">
+                	<img src="images/content_images/language_selection/logo.png" width="542" height="280">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: Language Selection -->
+    
+	<!-- start: Catalog or Samples Selection -->
+    <div data-role="page" id="catalog_or_samples" data-url="catalog_or_samples" class="full_height">
+    	<div class="ui-panel-wrapper">
+            <div class="top_image">
+            	<img src="images/content_images/catalog_or_samples/top.jpg" width="2048" height="1006">
+            </div> 
+            <div class="logo_and_links">
+                <div class="green_bg"></div>
+                <div class="green_horizontal_bg"></div>
+            	
+                <div class="catalog_or_samples_left">
+                    <a href="#catalog" ng-click="ChangeLocation('#catalog')" class="catalog_link" data-transition="slide">{{Strings.CatalogOrSamples.Catalog}}</a>
+                    <p>{{Strings.CatalogOrSamples.Today}}</p>
+                    <a href="#samples_landing" ng-click="ChangeLocation('#samples_landing')" class="samples_link" data-transition="slide">{{Strings.CatalogOrSamples.Samples}}</a>
+                </div>
+                <div class="catalog_or_samples_right">
+                	<img src="images/catalog_or_samples/logo.png">
+                	<h1>{{Strings.CatalogOrSamples.NaturalChoice}}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: Catalog or Samples Selection -->
+    
+    <!-- start: Catalog -->
+    <div data-role="page" id="catalog" data-url="catalog">
+    	<div class="ui-panel-wrapper">
+        	<!-- start: Catalog Slider -->
+            <div class="slider">
+            	
+                <!-- start: About Us Pages -->
+            	<div class="content_item  about_us scroll" ng-repeat="Page in AboutUsPages">
+                    <div ng-if="Page.StyleName=='style1' && CurrentState == 3">
+                	    <div class="half_width no_padding full_content_height">
+                            <img ng-src="{{GetImageByType(Page.PageBGImageID, 3)}}" width="1024" height="1327">
+                        </div>
+                        <div class="half_width text_padding">
+                    	    <h1><span>{{Page.PageTitle}}</span><br>{{Page.Title1}}</h1>
+                            <p ng-bind-html ="Page.PageContent | to_trusted"></p>
+                            <p ng-bind-html="Page.Content1 | to_trusted"></p>
+                            <h6 ng-bind-html="Page.Content2 | to_trusted"></h6>
+                        </div>
+                    </div>
+
+                    <div ng-if="Page.StyleName=='style2' && CurrentState == 3">
+                	    <div class="half_width text_padding">
+                    	    <h1>{{Page.PageTitle}}</h1>
+                            <p ng-bind-html="Page.PageContent | to_trusted"></p>
+                            <p ng-bind-html="Page.Content1 | to_trusted"></p>
+                            <p ng-bind-html="Page.Content2 | to_trusted"></p>
+                        </div>
+                	    <div class="half_width no_padding full_content_height">
+                            <img ng-src="{{GetImageByType(Page.PageBGImageID, 3)}}" width="1024" height="1327">
+                        </div>
+
+                    </div>
+                    <div ng-if="Page.StyleName=='style3' && CurrentState == 3">
+                	    <div class="top_image bottom right">
+                            <img ng-src="{{GetImageByType(Page.PageBGImageID, 2)}}" width="2048" height="718">
+                            <div class="hover_description">
+                        	    <h4>{{Page.PageTitle}}</h4>
+                            </div>
+                        </div>
+                	    <div class="half_width text_padding">
+                            <p ng-bind-html="Page.PageContent | to_trusted"></p>
+                        </div>
+                	    <div class="half_width text_padding">
+                            <p ng-bind-html="Page.Content1 | to_trusted"></p>
+                        </div>
+
+                    </div>
+                    <div ng-if="Page.StyleName=='style7' && CurrentState == 3">
+                	    <div class="half_width no_padding full_content_height">
+                            <img ng-src="{{GetImageByType(Page.PageBGImageID, 3)}}" width="1024" height="1327">
+                        </div>
+                        <div class="half_width text_padding">
+                    	    <h1 class="sixty"><span>{{Page.PageTitle}}</span><br>{{Page.Title1}}</h1>
+                            <ul>
+                                <li ng-bind-html="Page.PageContent | to_trusted"></li>
+                                <li ng-bind-html="Page.Content1 | to_trusted"></li>
+                                <li ng-bind-html="Page.Content2 | to_trusted"></li>
+                                <li ng-bind-html="Page.Content3 | to_trusted"></li>
+                                <li ng-bind-html="Page.Content4 | to_trusted"></li>
+                                <!--<li>The introduction of Designer Stone. Modifications to the production process and extensive research and development marked the genesis of our manufactured stone.</li>
+                                <li>The introduction of our Architectural Collection complemented the broad spectrum of existing Designer Stone choices. These Architectural Products transformed blocks of concrete into exclusive sizes and shapes for a dynamic expression on all modes of construction.</li>
+                                <li>The corporate name of Shouldice Cement Products Limited changed to Shouldice Designer Stone Limited. The new corporate name better reflected the nature of the business as stone profiles came to represent the major portion of sales.</li>-->
+                            </ul>
+                        </div>
+                    </div>
+                    <div ng-if="Page.StyleName=='style6' && CurrentState == 3">
+                	    <div class="top_image top left">
+                            <img ng-src="{{GetImageByType(Page.PageBGImageID, 2)}}" width="2048" height="718">
+                            <div class="hover_description">
+                        	    <h4>{{Page.PageTitle}}</h4>
+                            </div>
+                        </div>
+                	    <div class="half_width text_padding">
+                            <p ng-bind-html ="Page.PageContent | to_trusted"></p>
+                        </div>
+                	    <div class="half_width text_padding">
+                    	    <ul>
+                                <li ng-bind-html="Page.Content1 | to_trusted"></li>
+                                <li ng-bind-html="Page.Content2 | to_trusted"></li>
+                                <li ng-bind-html="Page.Content3 | to_trusted"></li>
+                                <!--<li>We operate a full time quality control department dedicated to ensuring that our customers have only products of the highest quality with which to satisfy their creative desires.</li>
+                                <li>Operating from a single manufacturing facility provides us with comprehensive control over all aspects of the manufacturing process.</li>
+                                <li>Our state-of-the-art technology and equipment ensure Shouldice Designer Stone is produced only to highest quality standards that our customers can trust with absolute confidence.</li>-->
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div ng-if="Page.StyleName=='style8' && CurrentState == 3">
+                	    <div class="top_image bottom right">
+                            <img ng-src="{{GetImageByType(Page.PageBGImageID, 2)}}" width="2048" height="718">
+                            <div class="hover_description">
+                        	    <h4>{{Page.PageTitle}}</h4>
+                            </div>
+                        </div>
+                	    <div class="half_width text_padding">
+                            <p ng-bind-html="Page.PageContent | to_trusted"></p>
+                            <p ng-bind-html="Page.Content1 | to_trusted"></p>
+                        </div>
+                	    <div class="half_width text_padding">
+                            <p ng-bind-html="Page.Content2 | to_trusted"></p>
+                            <p ng-bind-html="Page.Content3 | to_trusted"></p>
+                        </div>
+
+                    </div>
+                    <div ng-if="Page.StyleName=='style5' && CurrentState == 3">
+                	    <div class="top_image top left">
+                            <img ng-src="{{GetImageByType(Page.PageBGImageID, 2)}}" width="2048" height="718">
+                            <div class="hover_description">
+                        	    <h4>{{Page.PageTitle}}</h4>
+                            </div>
+                        </div>
+                	    <div class="full_width text_padding">
+                            <p ng-bind-html="Page.PageContent | to_trusted"></p>
+                            <p ng-bind-html="Page.Content1 | to_trusted"></p>
+                            <p ng-bind-html="Page.Content2 | to_trusted"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- end: About Us Pages -->
+
+                <!-- start: Category Pages -->
+            	<div class="content_item  {{Page.Class}}" ng-repeat="Page in CategoryPageSlides">
+                    <div ng-if="Page.Type == 1 && CurrentState == 3">
+                	    <a href="#" class="lightbox">
+                		    <!--<img src="images/content_images/main_category_image/residential.jpg" width="2048" height="1327">-->
+                            <img ng-src="{{GetImageByType(Page.PageBGImageID, 1)}}">
+                        </a>
+                        <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Page.MainImage)">
+                            <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Page.MainImage.isFavorite == false">
+                            <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Page.MainImage.isFavorite == true">
+                        </a>
+                        <div class="image_click_text move">{{Strings.CategoryPages.TapAbove}}</div>
+                    </div>
+                    <div ng-if="Page.Type == 2 && CurrentState == 3">
+                	    <!-- start: Sub Category Top -->
+                        <div class="subcat_image">
+                            <a ng-if="Page.MainImage != null" href="#" class="lightbox" ng-click="OpenCategoryGallery(Page, Page.MainImage)">
+                                <!--<img src="images/content_images/sub_category_main_image/sub_category_main_image.jpg" width="1280" height="1327">-->
+                                <img ng-src="{{GetImageByType(Page.MainImage.uid, 3)}}" />
+                            </a>
+                            <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Page.MainImage)">
+                                <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Page.MainImage.isFavorite == false">
+                                <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Page.MainImage.isFavorite == true">
+                            </a>
+                            <div class="image_click_text move">{{Strings.CategoryPages.TapAbove}}</div>
+                        </div>
+                        <div class="subcat_description" ng-if="Page.layout == '0'">
+                            <p>ID: {{Page.uid}}</p>
+                        </div>
+
+                        <div class="subcat_description" ng-if="Page.layout == '4'">
+                            <!--<p>ID: {{Page.uid}}</p>-->
+                    	    <h1>{{Page.Title}}</h1>
+                            <p>{{Page.content}}</p>
+                            <h5>Estate Stone is available in 4”, 8” and 12” heights, sizes are pre-blended.</h5>
+                            <a href="#" class="sub_cat_anchor">
+                        	    <span class="first">{{Strings.CategoryPages.SeeCollection}}</span>
+                                <span class="last">{{Strings.CategoryPages.ClickImage}}</span>
+                            </a>
+                        </div>
+                        <div class="subcat_description" ng-if="Page.layout == '5'">
+                            <h1 class="green">{{Page.Title}}</h1>
+                            <p>{{Page.content}}</p>
+                            <h5>Estate Stone is available in 4”, 8” and 12” heights, sizes are pre-blended.</h5>
+                            <a href="#" class="sub_cat_anchor orange">
+                                <span class="first">{{Strings.CategoryPages.SeeCollection}}</span>
+                                <span class="last">{{Strings.CategoryPages.ClickImage}}</span>
+                            </a>
+                        </div>
+
+                        <!--<div class="subcat_description" ng-if="Page.layout == '6'">
+                            <p>ID: {{Page.uid}}</p>
+                            <h1>{{Page.Title}}</h1>
+                            <p>{{Page.content}}</p>
+                            <h5>Estate Stone is available in 4”, 8” and 12” heights, sizes are pre-blended.</h5>
+                            <a href="#" class="sub_cat_anchor">
+                                <span class="first">See the collection</span>
+                                <span class="last">click images to enlarge & order samples</span>
+                            </a>
+                        </div>-->
+
+                        <!-- end: Sub Category Top -->
+                    
+                        <!-- start: Samples Listing -->
+                        <div class="stone_samples_listing" id="Div1">
+                    	    <!-- start: Stone Sample Item -->
+                            <div class="stone_sample_item" ng-repeat="Image in Page.Images">
+                        	    <div class="sample_item_header">
+                            	    <h2>{{Image.name}}</h2>
+                                    <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Image)">
+                                        <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Image.isFavorite == false">
+                                        <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Image.isFavorite == true">
+                                    </a>
+                                    <a href="#" class="lightbox" ng-click="OpenCategoryGallery(Page, Image)">
+                                	    <img src="images/item_icons/lightbox_link_item_header.png" width="51" height="80">
+                                    </a>
+                                </div>
+                                <div class="sample_item_image">
+                            	    <a href="#" class="lightbox">
+                                	    <!--<img src="images/content_images/sub_category_listing_image/Bradford.jpg" width="630" height="310">-->
+                                        <img ng-if="Page.MainImage != null" ng-src="{{GetImageByType(Image.uid, 6)}}" />
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- end: Stone Sample Item -->
+                                </div>
+                        <!-- end: Samples Listing -->
+                    </div>
+                </div>
+                <!-- end: Residential Main Category -->
+            
+                
+                <!-- start: Inpiration Page -->
+                <div class="content_item inpiration scroll" ng-repeat="Page in InspirationPages">
+                	
+                    <!-- start: Inspiration Top -->
+                    <div class="inspiration_top">
+                    	<div class="left">
+                        	<div class="inspiration_image_1">
+                            	<a href="#" class="lighbox" ng-click="OpenInspirationGallery(Page, Page.MainGallery.Images[0])">
+                                	<!--<img src="images/content_images/inspirations/image_1.jpg" width="600" height="1327">-->
+                                    <img ng-src="{{GetImageByType(Page.MainGallery.Images[0].uid, 7)}}" />
+                                </a>
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Page.MainGallery.Images[0])">
+                                    <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Page.MainGallery.Images[0].isFavorite == false">
+                                    <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Page.MainGallery.Images[0].isFavorite == true">
+                                </a>
+                                <div class="image_click_text move">{{Strings.Inspiration.TapAbove}}</div>
+                            </div>
+                            <div class="inspiration_image_2">
+                            	<a href="#" class="lighbox" ng-click="OpenInspirationGallery(Page, Page.MainGallery.Images[1])">
+                                	<!--<img src="images/content_images/inspirations/image_2.jpg" width="634" height="720">-->
+                                    <img ng-src="{{GetImageByType(Page.MainGallery.Images[1].uid, 8)}}" />
+                                </a>
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Page.MainGallery.Images[1])">
+                                    <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Page.MainGallery.Images[1].isFavorite == false">
+                                    <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Page.MainGallery.Images[1].isFavorite == true">
+                                </a>
+                            </div>
+                            <div class="inspiration_image_3">
+                            	<a href="#" class="lighbox" ng-click="OpenInspirationGallery(Page, Page.MainGallery.Images[2])">
+                                	<!--<img src="images/content_images/inspirations/image_3.jpg" width="640" height="590">-->
+                                    <img ng-src="{{GetImageByType(Page.MainGallery.Images[2].uid, 9)}}" />
+                                </a>
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Page.MainGallery.Images[2])">
+                                    <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Page.MainGallery.Images[2].isFavorite == false">
+                                    <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Page.MainGallery.Images[2].isFavorite == true">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="right">
+                        	<h1><span>{{Page.PageTitle}}</span><br>{{Page.title1}}</h1>
+                            <p>{{Page.pagecontent}}</p>
+                            <a href="#" class="inspiration_anchor" ng-bind-html="Strings.Inspiration.SwipeDown | to_trusted"></a>
+                        </div>
+                    </div>
+                    <!-- end: Inspiration Top -->
+                    
+                    <div class="{{Gallery.Class}}" ng-repeat="Gallery in Page.Galleries">
+                        
+                    <!-- start: Inspiration Middle -->
+                        <div class="inspiration_middle" ng-if="Gallery.layout == '2'">
+                            <div class="inspiration_image_4">
+                                <a href="#" class="lighbox" ng-click="OpenInspirationGallery(Page, Gallery.Images[0])">
+                                    <!--<img src="images/content_images/inspirations/image_4.jpg" width="600" height="1327">-->
+                                    <img ng-src="{{GetImageByType(Gallery.Images[0].uid, 10)}}" />
+                                </a>
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Gallery.Images[0])">
+                                    <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[0].isFavorite == false">
+                                    <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[0].isFavorite == true">
+                                </a>
+                                <div class="image_click_text">{{Strings.Inspiration.TapAbove}}</div>
+                            </div>
+                            <div class="inspiration_image_5">
+                                <a href="#" class="lighbox" ng-click="OpenInspirationGallery(Page, Gallery.Images[1])">
+                                    <!--<img src="images/content_images/inspirations/image_5.jpg" width="1408" height="644">-->
+                                    <img ng-src="{{GetImageByType(Gallery.Images[1].uid, 11)}}" />
+                                </a>
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Gallery.Images[1])">
+                                    <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[1].isFavorite == false">
+                                    <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[1].isFavorite == true">
+                                </a>
+                                <div class="image_click_text">{{Strings.Inspiration.TapAbove}}</div>
+                            </div>
+                            <div class="inspiration_image_6">
+                                <a href="#" class="lighbox" ng-click="OpenInspirationGallery(Page, Gallery.Images[2])">
+                                    <!--<img src="images/content_images/inspirations/image_6.jpg" width="584" height="430">-->
+                                    <img ng-src="{{GetImageByType(Gallery.Images[2].uid, 12)}}" />
+                                </a>
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Gallery.Images[2])">
+                                    <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[2].isFavorite == false">
+                                    <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[2].isFavorite == true">
+                                </a>
+                            </div>
+                            <div class="inspiration_image_7">
+                                <a href="#" class="lighbox" ng-click="OpenInspirationGallery(Page, Gallery.Images[3])">
+                                    <!--<img src="images/content_images/inspirations/image_7.jpg" width="850" height="740">-->
+                                    <img ng-src="{{GetImageByType(Gallery.Images[3].uid, 13)}}" />
+                                </a>
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Gallery.Images[3])">
+                                    <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[3].isFavorite == false">
+                                    <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[3].isFavorite == true">
+                                </a>
+                            </div>
+                        </div>
+                    <!-- end: Inspiration Middle -->
+                    
+                    <!-- start: Inspiration Bottom -->
+                    <div class="inspiration_bottom" ng-if="Gallery.layout == '3'" >
+                    	<div class="inspiration_image_10">
+                            <a href="#" class="lighbox" ng-click="OpenInspirationGallery(Page, Gallery.Images[0])">
+                                <!--<img src="images/content_images/inspirations/image_10.jpg" width="1750" height="1700">-->
+                                <img ng-src="{{GetImageByType(Gallery.Images[0].uid, 16)}}" />
+                            </a>
+                            <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Gallery.Images[0])">
+                                <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[0].isFavorite == false">
+                                <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[0].isFavorite == true">
+                            </a>
+                        </div>
+                    	<div class="inspiration_image_8">
+                            <a href="#" class="lighbox" ng-click="OpenInspirationGallery(Page, Gallery.Images[1])">
+                                <!--<img src="images/content_images/inspirations/image_8.jpg" width="600" height="570">-->
+                                <img ng-src="{{GetImageByType(Gallery.Images[1].uid, 15)}}" width="600" height="570" />
+                            </a>
+                            <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Gallery.Images[1])">
+                                <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[1].isFavorite == false">
+                                <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[1].isFavorite == true">
+                            </a>
+                        </div>
+                        <div class="inspiration_image_9">
+                            <a href="#" class="lighbox" ng-click="OpenInspirationGallery(Page, Gallery.Images[2])">
+                                <!--<img src="images/content_images/inspirations/image_9.jpg" width="500" height="600">-->
+                                <img ng-src="{{GetImageByType(Gallery.Images[2].uid, 15)}}" />
+                            </a>
+                            <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Gallery.Images[2])">
+                                <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[2].isFavorite == false">
+                                <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Gallery.Images[2].isFavorite == true">
+                            </a>
+                            <div class="image_click_text">{{Strings.Inspiration.TapAbove}}</div>
+                        </div>
+                    </div>
+                    <!-- end: Inspiration Bottom -->
+                    </div>
+                </div>
+                <!-- end: Inpiration Page -->
+                
+            </div>
+            <!-- end: Catalog Slider -->
+            
+            
+        </div>
+    </div>
+    <!-- end: Catalog -->
+    
+    <!-- start: Stone Samples Landing Page -->
+    <div data-role="page" id="samples_landing" data-url="samples_landing" class="">
+        <div class="ui-panel-wrapper">
+            <div class="image_left"> <!-- ng-style="{'background-image':'url({{GetImageByType(StoneSamplesPages[0].PageBGImageID)}})'}" -->
+                <a href="#samples_content"class="samples_link" data-transition="slide" ng-click="ShowStoneSamplePage(0)">{{StoneSamplesPages[0].PageTitle}}</a>
+            </div>
+            <div class="image_middle">
+            	<div class="unset">
+                    <a href="#samples_content" class="samples_link" data-transition="slide" ng-click="ShowStoneSamplePage(1)">{{StoneSamplesPages[1].PageTitle}}</a>
+                </div>
+            </div>
+            <div class="image_right">
+                <a href="#samples_content" class="samples_link" data-transition="slide" ng-click="ShowStoneSamplePage(2)">{{StoneSamplesPages[2].PageTitle}}</a>
+            </div>
+            <div class="white_line"></div>
+            <div class="horizontal_green"></div>
+            <div class="horizontal_grey">
+            	<h1>{{Strings.StoneSamples.NaturalChoice}}</h1>
+            </div>
+            <div class="logo">
+            	<img src="images/samples_landing/logo.png" width="610" height="314">
+            </div>
+        </div>
+    </div>
+    <!-- end: Stone Samples Landing Page -->
+    
+    <!-- start: Samples Listing Page -->
+    <div data-role="page" id="samples_content" data-url="samples_content" class="scroll">
+        <div class="ui-panel-wrapper">
+            <!-- start: Stone Samples Slider -->
+            <div class="slider">
+                
+                <!-- start: Stone Slider Samples Item -->
+                <div class="content_item" ng-repeat="Page in StoneSamplesSlides">
+                    <div class="breadcrumb"><h1>{{Page.ParentTitle}} / {{Page.Title}}</h1></div>
+                    
+                    <!-- start: Samples Listing -->
+                    <div class="stone_samples_listing" id="anchor_slide">
+                        <!-- start: Stone Sample Item -->
+                        <div class="stone_sample_item" ng-repeat="Image in Page.Images">
+                            <div class="sample_item_header">
+                                <h2>{{Image.Name}}</h2>
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Image)">
+                                    <img src="images/item_icons/add_to_favourites_item_header.png" width="51" height="80" ng-if="Image.isFavorite == false">
+                                    <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80" ng-if="Image.isFavorite == true">
+                                </a>
+                                <a href="#" class="lightbox">
+                                    <img src="images/item_icons/lightbox_link_item_header.png" width="51" height="80">
+                                </a>
+                            </div>
+                            <div class="sample_item_image">
+                                <a href="#" class="lightbox">
+                                    <img ng-src="{{GetImageByType(Image.uid,6)}}" width="630" height="310">
+                                </a>
+                            </div>
+                        </div>
+                        <!-- end: Stone Sample Item -->
+                    </div>
+                    <!-- end: Samples Listing -->
+                    
+                </div>
+                <!-- end: Stone Slider Samples Item -->
+                
+            </div>
+            <!-- end: Stone Samples Slider -->
+        </div>
+    </div>
+    <!-- end: Samples Listing Page -->
+    
+    <!-- start: Favourites -->
+    <div data-role="page" id="favourites" data-url="favorites" class="scroll">
+    	<div class="ui-panel-wrapper">
+        	<h1><span>{{Strings.Favourites.PageTitle}}</span></h1>
+            <div class="labels"><h2>{{Strings.Favourites.Title1}}</h2></div>
+            <div class="labels"><h2>{{Strings.Favourites.Title2}}</h2></div>
+            
+            <!-- start: Left Column -->
+            <div class="favourites_column">
+            	
+                <!-- start: Category Wrapper -->
+            	<div class="category_wrapper" ng-repeat="Gallery in Favorites_StoneSamples">
+            		<h3 ng-if="Language == 1">{{Gallery.name}}</h3>
+                    <h3 ng-if="Language == 2">{{Gallery.namefr}}</h3>
+                    <!-- start: Favourites Item -->
+                    <div class="favourite_item" ng-repeat="Image in Gallery.Images">
+                        <div class="favourite_item_header">
+                            <h4 ng-if="Language == 1">{{Image.name}}</h4>
+                            <h4 ng-if="Language == 2">{{Image.namefr}}</h4>
+                            <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Image)">
+                                <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80">
+                            </a>
+                            <a href="#" class="lightbox">
+                                <img src="images/item_icons/lightbox_link_item_header.png" width="51" height="80">
+                            </a>
+                        </div>
+                        <div class="favourite_item_image">
+                            <a href="#" class="lightbox">
+                                <img ng-src="{{GetImageByType(Image.uid, 18)}}" width="471" height="232">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- end: Favourites Item -->
+                </div>
+                <!-- end: Category Wrapper -->
+                
+            </div>
+            <!-- end: Left Column -->
+            
+            <!-- start: Right Column -->
+            <div class="favourites_column">
+            	<!-- start: Category Wrapper -->
+            	<div class="category_wrapper" ng-repeat="Gallery in Favorites_Inspirations">
+            		<h3 ng-if="Language == 1">{{Gallery.name}}</h3>
+                    <h3 ng-if="Language == 2">{{Gallery.namefr}}</h3>
+                    <!-- start: Favourites Item -->
+                    <div class="favourite_item" ng-repeat="Image in Gallery.Images">
+                        <div class="favourite_item_header">
+                            <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(Image)">
+                                <img src="images/item_icons/remove_from_favourites_item_header.png" width="51" height="80">
+                            </a>
+                            <a href="#" class="lightbox">
+                                <img src="images/item_icons/lightbox_link_item_header.png" width="51" height="80">
+                            </a>
+                        </div>
+                        <div class="favourite_item_image">
+                            <a href="#" class="lightbox">
+                                <img ng-src="{{GetImageByType(Image.uid, 18)}}" width="471" height="232">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- end: Favourites Item -->
+                </div>
+                <!-- end: Category Wrapper -->
+            </div>
+            <!-- end: Right Column -->
+            
+        </div>
+    </div>
+    <!-- end: Favourites -->
+    
+    <!-- start: Contact -->
+    <div data-role="page" id="contact" data-url="contact">
+    	<div class="ui-panel-wrapper">
+        	<div class="white_diagonal_bg"></div>
+            <div class="contact_content">
+                <h1><span>{{Strings.Contact.SectionTitle}}</span></h1>
+                <h2 ng-bind-html="Strings.Contact.PageTitle | to_trusted"></h2>
+                <p ng-bind-html="Strings.Contact.Content | to_trusted"></p>
+                <form id="nix_contact_form">
+                    <div class="form_row">
+                        <label>{{Strings.Contact.FirstName}}</label>
+                        <input type="text" data-role="none" name="firstName" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                    </div>
+                    <div class="form_row">
+                        <label>{{Strings.Contact.LastName}}</label>
+                        <input type="text" data-role="none" name="lastName" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                    </div>
+                        <div class="form_row">
+                        <label>{{Strings.Contact.Iam}}</label>
+                        <div id="radio">
+                            <input type="radio" data-role="none" name="profession" value="Contractor">
+                            <label>{{Strings.Contact.Contractor}}</label>
+                            <input type="radio" data-role="none" name="profession" value="Homeowner">
+                            <label>{{Strings.Contact.Homeowner}}</label>
+                            <input type="radio" data-role="none" name="profession" value="Architect">
+                            <label>{{Strings.Contact.Architect}}</label>
+                            <input type="radio" data-role="none" name="profession" value="Designer">
+                            <label>{{Strings.Contact.Designer}}</label>
+                        </div>
+                    </div>
+                    <div class="form_row">
+                        <label>{{Strings.Contact.Email}}</label>
+                        <input type="email" data-role="none" name="email" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                    </div>
+                    <div class="form_row">
+                        <label>{{Strings.Contact.Phone}}</label>
+                        <input type="text" data-role="none" name="phoneNumber" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                    </div>
+                    <div class="form_row">
+                        <input type="submit" value="{{Strings.Contact.Submit}}" data-role="none" />
+                    </div>
+                </form>
+                <div class="contact_msgs hidden">
+                    <p id="contact_success_msg" class="hidden">{{Strings.Contact.ContactMsgSuccess}}</p>
+                    <p id="contact_error_msg" class="hidden">{{Strings.Contact.ContactMsgError}}</p>
+                    <div class="form_row1">
+                        <input onclick="event.preventDefault(); HideContactMsgs();" type="button" value="Go Back" data-role="none" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: Contact -->
+    
+    <!-- start: Footer Catalog -->
+    <div id="footer_catalog" class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <ul>
+            <li class="first act" counter="0">
+            	<a href="#" class="level_1" counter="0">{{Strings.FooterCatalog.Title}}</a>
+            </li>
+            <li class="" counter="{{Category.Counter}}" ng-repeat="Category in CategoryPages">
+            	<a href="#" class="level_1" counter="{{Category.Counter}}">{{Category.PageTitle}}</a>
+            	<ul class="subnav">
+                	<a href="#" class="toggle_subnav" >
+                    	<img src="images/footer/show_subnav.jpg" width="120" height="120" class="first">
+                        <img src="images/footer/hide_subnav.jpg" width="120" height="120" class="last">
+                    </a>
+                	<li class="subnav_item" ng-repeat="Gallery in Category.Galleries" counter="{{Gallery.Counter}}">
+                    	<a href="#" class="subnav_text" counter="{{Gallery.Counter}}">{{Gallery.title}}</a>
+                        <a href="#" class="subnav_image" counter="{{Gallery.Counter}}">
+                            <img ng-src="{{GetImageByType(Gallery.menuimageid, 17)}}" width=" 258" height="130">
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="last" counter="{{InspirationPageCounter}}">
+            	<a href="#" class="level_1" counter="{{InspirationPageCounter}}">{{Strings.FooterCatalog.Title2}}</a>
+            	<ul class="subnav">
+                	<a href="#" class="toggle_subnav" >
+                    	<img src="images/footer/show_subnav.jpg" width="120" height="120" class="first">
+                        <img src="images/footer/hide_subnav.jpg" width="120" height="120" class="last">
+                    </a>
+                	<li class="subnav_item" ng-repeat="Inspiration in InspirationPages" counter="{{Inspiration.Counter}}">
+                    	<a href="#" class="subnav_text" counter="{{Inspiration.Counter}}">{{Inspiration.PageTitle}}</a>
+                        <a href="#" class="subnav_image" counter="{{Inspiration.Counter}}">
+                            <img ng-src="{{GetImageByType(Inspiration.PageBGImageID, 17)}}" width=" 258" height="130">
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- end: Footer Catalog -->
+    
+    <!-- start: Footer Samples -->
+    <div id="footer_samples" class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <ul>
+        	<a href="#" class="toggle_subnav">
+                <img src="images/footer/show_subnav.jpg" width="120" height="120" class="first">
+                <img src="images/footer/hide_subnav.jpg" width="120" height="120" class="last">
+            </a>
+            <li class="{{Page.MenuClass}}" counter="{{Page.Counter}}" ng-repeat="Page in StoneSamplesPages">
+            	<a href="#" class="level_1" counter="{{Page.Counter}}">{{Page.PageTitle}}</a>
+            	<ul class="subnav">
+                	<a href="#" class="toggle_subnav">
+                    	<img src="images/footer/show_subnav.jpg" width="120" height="120" class="first">
+                        <img src="images/footer/hide_subnav.jpg" width="120" height="120" class="last">
+                    </a>
+                	<li class="subnav_item" counter="{{Gallery.Counter}}" ng-repeat="Gallery in Page.Galleries">
+                    	<a href="#" class="subnav_text" counter="{{Gallery.Counter}}">{{Gallery.Title}}</a>
+                        <a href="#" class="subnav_image" counter="{{Gallery.Counter}}">
+                        <img ng-src="{{GetImageByType(Gallery.Images[0].uid, 17)}}" width="258" height="130">
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- end: Footer Samples -->
+
+	<!-- start: Gallery Popup -->
+    <div id="gallery_popup">
+    	<div id="gallery_popup_header">
+        	<h1 id="galleryHeader"></h1>
+            <a href="#" id="close_popup" onclick="$('#gallery_popup').hide();">
+            	<img src="images/gallery_popup/close_popup.png">
+            </a>
+            <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGalleryFromLightbox()">
+            	<img id="galleryAddFromFavorites" src="images/gallery_popup/add_to_favorites.png" width="46" height="100">
+                <img id="galleryRemoveFromFavorites" src="images/gallery_popup/remove_from_favorites.png" width="46" height="100"> 
+            </a>
+        </div>
+        <div id="gallery_image">
+        </div>
+    </div>
+    <!-- end: Gallery Popup -->
+
+    <script type="text/javascript" src="cordova.js"></script>
+    
+    <script>
+        function successFunction() {
+            //alert("It worked!");
+        }
+
+        function errorFunction(error) {
+            //alert(error);
+        }
+
+        function trace(value) {
+            //alert(value);
+        }
+
+        function onOnline() {
+            IsOnline = true;
+            GoOnLine();
+			
+            if(firstInit == false){
+                firstInit = true;
+            }
+        }
+
+        function onOffline() {
+            IsOnline = false;
+            GoOffline();
+        }
+		var firstInit = false;
+        function onDeviceReady() {
+            isCordovaApp = true;
+
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
+                dataDir = fileSystem.root.getDirectory("images", { create: true }, function (dir) {
+                    UrlToImages = dir.toURL();
+                    CheckData();
+					
+                });
+            });
+            navigator.splashscreen.hide();
+        }
+
+        document.addEventListener("online", onOnline, false);
+        document.addEventListener("offline", onOffline, false);
+        document.addEventListener("deviceready", onDeviceReady, false);
+		document.addEventListener("backbutton", function(){
+			$('#back_button').click();
+		}, false);
+
+    </script>
+</body>
+</html>
